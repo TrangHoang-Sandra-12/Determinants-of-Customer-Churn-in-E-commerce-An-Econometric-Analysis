@@ -1,0 +1,941 @@
+---
+title: "Determinants of Customer Churn in E-commerce: An Econometric Analysis"
+author: "Trang Hoang 476929 "
+date: "2025-04-28"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: '5'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# 1. Abstract
+
+The aim of this paper is to identify and quantify the factors that influence customer churn in e-commerce from an econometric perspective. Customer churn remains a critical challenge for business profitability, as retaining existing customers is often more cost-effective than acquiring new ones. In a competitive landscape marked by evolving consumer expectations, understanding the drivers of churn is more important than ever.
+
+Using a synthetic e-commerce dataset, we employ a binary logistic regression model to examine the impact of customer characteristics such as shopping behavior, engagement metrics, demographics, satisfaction levels, and product preferences on churn likelihood. Contrary to initial expectations, higher satisfaction scores were associated with a slight increase in churn probability, suggesting complex dynamics at play. Meanwhile, longer tenure and recent purchase activity significantly reduced the risk of churn, while complaints and greater delivery distance increased it.
+
+Notably, customers with more registered devices or a preference for niche product categories were more likely to churn, while those favoring mainstream categories like laptops or mobile phones were less likely to leave. The results confirm that both behavioral and demographic variables play a significant role in customer retention. These findings provide practical guidance for firms to improve complaint handling, segment at-risk customers more effectively, and tailor engagement strategies. Furthermore, the study builds a foundation for applying advanced predictive models such as machine learning to refine churn prediction and enhance customer relationship management.
+
+# 2. Introduction
+
+In recent years, e-commerce has developed into a fast-growing industry in which competition between companies is becoming increasingly fierce. One of the biggest challenges for e-commerce platforms is customer churn. When customers stop shopping or switch to another platform, this not only reduces revenue, but also wastes investment costs for marketing, advertising and customer care. According to a Harvard Business Review report, the cost of acquiring a new customer can be 5 to 25 times higher than the cost of retaining an existing customer. In addition, research by Bain & Company shows that a 5% increase in customer retention can increase profits by 25 to 95%. These figures underline the economic importance of analyzing customer churn behavior in the e-commerce sector.
+
+In this context, understanding the factors that influence churn behavior is a top priority for companies in order to optimize their customer retention strategies. Although many previous studies have applied statistical methods and machine learning models to predict customer churn, there is still a lack of in-depth analysis of the causal relationship between customer behavior characteristics and churn probability based on traditional econometric approaches.
+
+This study adopts a binary logit regression model to quantify the relationship between customer characteristics and churn probability. The variables analyzed include time spent on the platform, purchase behavior, engagement, payment method, satisfaction level and complaint occurrence. By applying this methodology, the study not only identifies the key factors influencing churn, but also provides clear quantitative evidence to support effective customer management strategies.
+
+It is expected that the results of this study will provide insights for the development of more advanced customer churn prediction models in the future and assist managers in making strategic decisions about marketing, customer care and the optimization of company resources.
+
+# 3. Literature Review
+
+Customer churn is a pressing issue in the e-commerce sector, where acquiring new customers is generally more expensive than retaining existing ones. Understanding the underlying drivers of churn enables businesses to allocate marketing resources more efficiently and develop effective retention strategies. A growing body of research has explored behavioral, demographic, experiential, and preference-based factors influencing customer churn using both traditional econometric models and modern machine learning approaches.
+
+## 3.1. Customer Behavior and Engagement
+
+Customer behavior and engagement are among the most consistently cited predictors of churn. Li (2022) applied a Random Forest model to e-commerce churn prediction and found that OrderCount, DaySinceLastOrder, and Complain were among the most influential predictors. Similarly, Berger and Kompan (2019) emphasized behavioral metrics such as HourSpendOnApp and NumberOfDeviceRegistered, arguing that decreased engagement with the platform often precedes churn.
+
+Bhattacharya (2021) also supported this view, showing that declining frequency of interactions and lower transaction volume significantly raised churn risk among e-commerce customers. The study highlighted that users with sporadic usage patterns are more susceptible to disengagement. These results underscore the importance of continuous engagement in mitigating churn.
+
+## 3.2. Demographic Factors
+
+Demographic characteristics, such as gender, age, and tenure, are also commonly linked to churn behavior. In Li’s (2022) study, female users and customers with shorter tenure periods were more likely to churn. Similarly, Berger and Kompan (2019) found gender to be a significant factor, while Liu and Wang (2010) identified educational attainment as a key demographic influencing churn in the service sector—suggesting that more educated users may have higher service expectations and a lower tolerance for dissatisfaction.
+
+Adding to this, Ahmad et al. (2019) showed that age group and marital status play a significant role in customer retention, with younger and single customers demonstrating a higher probability of switching platforms. These insights are especially relevant when designing personalized retention strategies.
+
+## 3.3. Product Preferences
+
+Product preferences, while often overlooked, are crucial in understanding churn. Berger and Kompan (2019) found that customers with narrow or niche product interests were more prone to churn when platforms failed to meet their expectations. In a similar study, Dahiya and Bhatia (2020) analyzed product-level transaction data and concluded that customers who primarily purchased electronics or single-category goods exhibited more volatile loyalty patterns, particularly when competitors offered better alternatives.
+
+This aligns with the current study’s findings, where customers who preferred mainstream product categories (e.g., laptops or mobile phones) were significantly less likely to churn than those in "Other" categories.
+
+## 3.4. Platform Experience and Satisfaction
+
+Customer experience—including satisfaction levels and service-related issues—plays a fundamental role in determining churn. Li (2022) found that SatisfactionScore and Complain strongly influence churn likelihood, echoing earlier findings by Mittal and Kamakura (2001), who showed that customer satisfaction and complaint handling quality directly impact retention and brand loyalty.
+
+Moreover, Jaiswal and Niraj (2011) emphasized that satisfaction must be interpreted in context; not all satisfied customers are loyal. Factors such as perceived switching cost, emotional attachment, and service recovery also mediate the relationship between satisfaction and churn.
+
+# 4. Data
+
+The dataset used for this analysis is Ecommerce Customer Churn Analysis and Prediction.cvs, which contains information about customer behavior including: demographics, frequency, usages and attitudes, loyalty, complain provided by Kaggle (<https://www.kaggle.com/datasets/ankitverma2010/ecommerce-customer-churn-analysis-and-prediction>)
+
+Dataset contains 17 variables:
+
+*Demographic Factors*
+
+-   Gender: The gender of the customer.
+-   MaritalStatus: The marital status of the customer.
+-   CityTier: The tier of the customer's city.
+-   NumberOfAddress: The number of addresses the customer has registered.
+-   WarehouseToHome: The distance between the warehouse and the customer's home
+
+*Customer Behavior and Engagement*
+
+-   HourSpendOnApp: The number of hours the customer spends on the app.
+-   NumberOfDeviceRegistered: The number of devices registered by the customer.
+-   OrderCount: The total number of orders made by the customer.
+-   DaySinceLastOrder: The number of days since the customer's last order.
+-   CouponUsed: The number of coupons used by the customer.
+-   OrderAmountHikeFromlastYear: The increase in the order amount compared to the previous year.
+-   CashbackAmount: The amount of cashback the customer has received.
+-   PreferredLoginDevice: The device the customer prefers to use when logging in.
+-   PreferredPaymentMode: The customer's preferred mode of payment.
+-   PreferedOrderCat: The type of products the customer prefers to order.
+
+*Experience with the Platform*
+
+-   SatisfactionScore: The satisfaction score that the customer has given to the service.
+-   Complain: Whether the customer has made a complaint or not.
+
+## 4.1. Data preparation
+
+```{r}
+# Packages & Libraries
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(GGally,corrplot,car,lmtest,modelsummary,margins,BaylorEdPsych,ResourceSelection,caret,pROC)
+
+```
+
+```{r}
+# Import dataset
+```
+
+```{r, echo = FALSE}
+setwd("/Users/phuongtrang/Documents/Study/2nd semester/Econometrics")
+```
+
+```{r}
+data<-read.csv("E Commerce Dataset.csv", sep=";", dec=".",header=TRUE)
+```
+
+```{r}
+# Checking data
+head(data)
+dim(data)
+summary(data)
+```
+
+There are many NA values in the dataset, so I use complete.case to remove rows with NA value
+
+```{r}
+data <- data[complete.cases(data), ]
+any(is.na(data))
+```
+
+## 4.2. Data processing
+
+```{r}
+# Remove ID column (non-meaning variable)
+data <- data[, -1] 
+```
+
+```{r}
+# Checking distribution of numeric data
+barplot(table(data$Churn), 
+        col = "lightblue",
+        xlab = "Churn", 
+        ylab = "Number of Customers",
+        main = "Bar Plot of Churn Variable",
+        space = 0.8) 
+
+barplot(table(data$Tenure), 
+        col = "lightblue",
+        xlab = "Tenure", 
+        ylab = "Number of Customers",
+        main = "Bar Plot of Tenure Variable",
+        space = 0.2) 
+
+barplot(table(data$CityTier), 
+        col = "lightblue",
+        xlab = "CityTier", 
+        ylab = "Number of Customers",
+        main = "Bar Plot of CityTier Variable",
+        space = 0.6) 
+
+barplot(table(data$WarehouseToHome), 
+        col = "lightblue",
+        xlab = "WarehouseToHome", 
+        ylab = "Number of Customers",
+        main = "Bar Plot of WarehouseToHome Variable",
+        space = 0.1) 
+
+barplot(table(data$HourSpendOnApp), 
+        col = "lightblue",
+        xlab = "HourSpendOnApp", 
+        ylab = "Number of Customers",
+        main = "Bar Plot of HourSpendOnApp Variable",
+        space = 0.3) 
+
+barplot(table(data$NumberOfDeviceRegistered), 
+        col = "lightblue",
+        xlab = "NumberOfDeviceRegistered", 
+        ylab = "Number of Customers",
+        main = "Bar Plot of NumberOfDeviceRegistered Variable",
+        space = 0.3) 
+
+barplot(table(data$SatisfactionScore), 
+        col = "lightblue",
+        xlab = "SatisfactionScore", 
+        ylab = "Number of Customers",
+        main = "Bar Plot of SatisfactionScore Variable",
+        space = 0.3) 
+
+barplot(table(data$NumberOfAddress), 
+        col = "lightblue",
+        xlab = "NumberOfAddress", 
+        ylab = "Number of Customers",
+        main = "Bar Plot of NumberOfAddress Variable",
+        space = 0.1) 
+
+barplot(table(data$Complain), 
+        col = "lightblue",
+        xlab = "Complain", 
+        ylab = "Number of Customers",
+        main = "Bar Plot of Complain Variable",
+        space = 0.8) 
+
+barplot(table(data$OrderAmountHikeFromlastYear), 
+        col = "lightblue",
+        xlab = "OrderAmountHikeFromlastYear", 
+        ylab = "Number of Customers",
+        main = "Bar Plot of OrderAmountHikeFromlastYear Variable",
+        space = 0.1) 
+
+barplot(table(data$CouponUsed), 
+        col = "lightblue",
+        xlab = "CouponUsed", 
+        ylab = "Number of Customers",
+        main = "Bar Plot of CouponUsed Variable",
+        space = 0.2) 
+
+barplot(table(data$OrderCount), 
+        col = "lightblue",
+        xlab = "OrderCount", 
+        ylab = "Number of Customers",
+        main = "Bar Plot of OrderCount Variable",
+        space = 0.2) 
+
+barplot(table(data$DaySinceLastOrder), 
+        col = "lightblue",
+        xlab = "DaySinceLastOrder", 
+        ylab = "Number of Customers",
+        main = "Bar Plot of DaySinceLastOrder Variable",
+        space = 0.2) 
+barplot(table(data$CashbackAmount), 
+        col = "lightblue",
+        xlab = "CashbackAmount", 
+        ylab = "Number of Customers",
+        main = "Bar Plot of CashbackAmount Variable",
+        space = 0.1) 
+
+```
+
+```{r}
+# Checking distribution of character data
+
+barplot(table(data$PreferredLoginDevice), 
+        col = "blue",
+        xlab = "PreferredLoginDevice", 
+        ylab = "Number of Customers",
+        main = "Bar Plot of PreferredLoginDevice Variable",
+        space = 0.8) 
+
+barplot(table(data$PreferredPaymentMode), 
+        col = "blue",
+        ylab = "Number of Customers",
+        main = "Bar Plot of PreferredPaymentMode Variable",
+        space = 0.2,
+        las = 2,
+        cex.names = 1)
+barplot(table(data$Gender), 
+        col = "blue",
+        xlab = "Gender", 
+        ylab = "Number of Customers",
+        main = "Bar Plot of Gender Variable",
+        space = 0.8)
+
+barplot(table(data$PreferedOrderCat), 
+        col = "blue",
+        ylab = "Number of Customers",
+        main = "Bar Plot of PreferedOrderCat Variable",
+        space = 0.2,
+        las = 2,
+        cex.names = 1)
+
+barplot(table(data$MaritalStatus), 
+        col = "blue",
+        xlab = "MaritalStatus", 
+        ylab = "Number of Customers",
+        main = "Bar Plot of MaritalStatus Variable",
+        space = 0.8)
+```
+
+```{r}
+# Check the relationship among numeric variables
+numeric_data <- data[, sapply(data, is.numeric)]
+ggpairs(numeric_data)
+corrplot(cor(numeric_data), 
+         method = "number", 
+         number.cex = 0.6,   
+         tl.cex = 0.6,      
+         order = "hclust")
+```
+
+This heatmap shows the correlation matrix between various customer behavior and profile features.
+
+Correlation values:
+
+-   Close to 1 → strong positive relationship.
+-   Close to -1 → strong negative relationship.
+-   Close to 0 → no linear relationship.
+
+Color scheme: Dark blue indicates strong positive correlation; red indicates strong negative correlation.
+
+### Key Correlations
+
+#### Strong Positive Correlations:
+
+-   CouponUsed and OrderCount: 0.73. Customers who use more coupons tend to place more orders.
+-   OrderCount and DaySinceLastOrder: 0.46. Customers who place more orders tend to have more days since their last order. This is a little counterintuitive — it might suggest that high-frequency buyers could also experience recent inactivity (possible loyalty fatigue or seasonal effects). Needs deeper analysis
+-   CouponUsed and DaySinceLastOrder: 0.32. Customers who use more coupons also show longer gaps since the last order. Possibly because promotions attract buyers during campaigns, but they are not consistent buyers otherwise
+-   HourSpendOnApp and NumberOfDeviceRegistered; 0.29. Customers who spend more time on the app tend to register more devices. Likely reflects tech-savvy, engaged customers who access the service from multiple devices
+
+#### Strong Negative Correlations:
+
+-   Tenure and Churn: -0.34. Customers with a longer tenure (longer history with the company) are less likely to churn..
+
+#### Weak Correlations:
+
+-   WarehouseToHome, OrderAmountHikeFromLastYear have very weak correlations with other features (correlation values close to 0).
+
+```{r}
+# Churn within categories
+
+churn_gender_table <- table(data$Churn, data$Gender)
+barplot(churn_gender_table, beside = TRUE, col = c("lightblue", "deepskyblue"),
+        legend = rownames(churn_gender_table),
+        xlab = "Churn", ylab = "Number of Customers",
+        main = "Churn by Gender")
+churn_gender_table <- table(data$Churn, data$Gender)
+
+
+
+churn_PreferredLoginDevice_table <- table(data$Churn, data$PreferredLoginDevice)
+barplot(churn_PreferredLoginDevice_table, beside = TRUE, col = c("lightblue", "deepskyblue"),
+        legend = rownames(churn_PreferredLoginDevice_table),
+        xlab = "PreferredLoginDevice", ylab = "Number of Customers",
+        main = "Churn by PreferredLoginDevice")
+
+
+churn_PreferredPaymentMod_table <- table(data$Churn, data$PreferredPaymentMod)
+barplot(churn_PreferredPaymentMod_table, beside = TRUE, col = c("lightblue", "deepskyblue"),
+        legend = rownames(churn_PreferredPaymentMod_table),
+        xlab = "PreferredPaymentMod", ylab = "Number of Customers",
+        main = "Churn by PreferredPaymentMod",
+        cex.names = 0.5)
+
+churn_PreferedOrderCat_table <- table(data$Churn, data$PreferedOrderCat)
+barplot(churn_PreferedOrderCat_table, beside = TRUE, col = c("lightblue", "deepskyblue"),
+        legend = rownames(churn_PreferedOrderCat_table),
+        xlab = "PreferedOrderCat", ylab = "Number of Customers",
+        main = "Churn by PreferedOrderCat",
+        cex.names = 0.3)
+
+churn_MaritalStatus_table <- table(data$Churn, data$MaritalStatus)
+barplot(churn_MaritalStatus_table, beside = TRUE, col = c("lightblue", "deepskyblue"),
+        legend = rownames(churn_MaritalStatus_table),
+        xlab = "MaritalStatus", ylab = "Number of Customers",
+        main = "Churn by MaritalStatus",
+        cex.names = 0.7)
+
+
+```
+
+# 5. Method & Model
+
+## 5.1. Data transformation
+
+To obtain reliable and accurate model results, data preprocessing is essential. As previously mentioned, approximately 5% of the samples contain missing values (NA). These samples were removed from the dataset to ensure uniformity and completeness during subsequent processing stages.
+
+The dataset contains a mix of numerical and categorical variables. To properly handle the categorical variables, all text fields were converted into factors, allowing them to be treated appropriately in statistical models and machine learning algorithms
+
+```{r}
+# Convert category variables into factor
+data[sapply(data, is.character)] <- lapply(data[sapply(data, is.character)], factor)
+
+# Check result
+summary(data)
+```
+
+## 5.2. Model selection
+
+**Apply log transformation for continuous right-skew variables**
+
+```{r}
+# Check "zero-value"
+vars_to_check <- c("Tenure", "WarehouseToHome", "NumberOfAddress", 
+                   "OrderAmountHikeFromlastYear", "CouponUsed", 
+                   "OrderCount", "DaySinceLastOrder", "CashbackAmount")
+sapply(vars_to_check, function(var) {
+  sum(data[[var]] == 0)
+})
+
+#Log - transformation
+
+data$log_Tenure <- log(data$Tenure + 1)
+data$log_WarehouseToHome <- log(data$WarehouseToHome)
+data$log_NumberOfAddress <- log(data$NumberOfAddress)
+data$log_OrderAmountHikeFromlastYear <- log(data$OrderAmountHikeFromlastYear)
+data$log_CouponUsed <- log(data$CouponUsed + 1)
+data$log_OrderCount <- log(data$OrderCount)
+data$log_DaySinceLastOrder <- log(data$DaySinceLastOrder + 1)
+data$log_CashbackAmount <- log(data$CashbackAmount + 1)
+
+```
+
+```{r}
+# Compare logit and probit model
+
+mylogit <- glm(Churn ~ log_Tenure + PreferredLoginDevice + CityTier + log_WarehouseToHome + PreferredPaymentMode + Gender + HourSpendOnApp + NumberOfDeviceRegistered + PreferedOrderCat + SatisfactionScore + MaritalStatus + log_NumberOfAddress + Complain + log_OrderAmountHikeFromlastYear + log_CouponUsed + log_OrderCount + log_DaySinceLastOrder + log_CashbackAmount,data = data,
+  family = binomial(link = "logit"))
+
+summary(mylogit)
+
+myprobit <- glm(Churn ~ log_Tenure + PreferredLoginDevice + CityTier + log_WarehouseToHome + PreferredPaymentMode + Gender + HourSpendOnApp + NumberOfDeviceRegistered + PreferedOrderCat + SatisfactionScore + MaritalStatus + log_NumberOfAddress + Complain + log_OrderAmountHikeFromlastYear + log_CouponUsed + log_OrderCount + log_DaySinceLastOrder + log_CashbackAmount,data = data,
+  family = binomial(link = "probit"))
+
+summary(myprobit)
+```
+
+To model customer churn effectively, we chose the Binary Logistic Regression Model. Our dataset’s target variable, Churn, is a binary outcome (1/0), making logistic regression a natural and appropriate choice. Additionally, our dataset includes a combination of numerical and categorical predictors. After converting all categorical variables into factors, we ensure the logistic model can handle them appropriately without needing extensive additional preprocessing.
+
+We prefer the binary logit model because it provides clear interpretability and better model performance. Furthermore, we compared the performance of the logistic and probit models using the Akaike Information Criterion (AIC). The logit model achieved a lower AIC value (1925) compared to the probit model (1968), indicating that the logit model fits the data better while maintaining simplicity and ease of interpretation.
+
+The **logit model** is based on the **logistic function**, an S-shaped curve that maps any real-valued number into the interval (0, 1). This makes it ideal for modeling probabilities—such as the likelihood of **churn**, which is the focus of our study.
+
+*Mathematical Formulation*
+
+The **binary logit model** can be expressed as:
+
+$$
+P(Y = 1 \mid X) = \frac{\exp(\beta_0 + \beta_1 X_1 + \cdots + \beta_n X_n)}{1 + \exp(\beta_0 + \beta_1 X_1 + \cdots + \beta_n X_n)}
+$$
+
+where:
+
+-   $P(Y = 1 \mid X)$ is the **probability of churn** given the predictor variables $X$.
+-   $\beta_0, \beta_1, \dots, \beta_n$ are the **parameters** of the model to be estimated.
+-   $X_1, \dots, X_n$ are the **explanatory variables** or **predictors** influencing churn.
+
+*Interpretation*
+
+The goal of estimating these parameters is to understand how changes in the predictor variables affect the **odds of churn**. Each coefficient $\beta_i$ represents the **log-odds change** in churn associated with a one-unit increase in $X_i$, **holding all other variables constant**.
+
+## 5.3. Methodology
+
+```{r}
+# First model (full model)
+summary(mylogit)
+```
+
+**Remove statistically insignificant variables**
+
+We sequentially remove statistically insignificant variables based on the regression results from the `summary(mylogit)` function. Specifically, we retain variables with p values less than 0.05 (shown in the `Pr(>|z|)` column), corresponding to a significance level of 5%.
+
+Insignificant variables (p \> 0.05)
+
+-   `PreferedOrderCatGrocery` (p = 0.968292)
+-   `PreferredPaymentModeE wallet` (p = 0.939153)
+-   `CashbackAmount` (p = 0.870591)
+-   `OrderAmountHikeFromlastYear` (p = 0.803062 )
+-   `PreferredPaymentModeCOD` (p = 0.789872)
+-   `PreferredPaymentModeDebit Card` (p = 0.377716)
+-   `PreferredPaymentModeCC` (p = 0.361484)
+-   `HourSpendOnApp` (p = 0.358606)
+-   `PreferredPaymentModeCredit Card` (p = 0.242404)
+-   `PreferredPaymentModeUPI` (p = 0.216900)
+-   `CouponUsed` (p = 0.147744)
+-   `MaritalStatusMarried` (p = 0.097759)
+-   `PreferredLoginDevicePhone` (p = 0.077522)
+
+#### Compare Full model and Null model
+
+```{r}
+null_logit = glm(Churn~1, data=data, family=binomial(link="logit"))
+lrtest(mylogit, null_logit)
+```
+
+The p-value is extremely small (p \< 0.001), indicating strong evidence against the null model. In other words, the full model provides a significantly better fit to the data than the null model.The set of explanatory variables jointly contributes significantly to explaining the likelihood of churn. Therefore, including these predictors in the model is statistically justified.
+
+#### Variance Inflation Factor (VIF)
+
+To check for multicollinearity in your model using the Variance Inflation Factor (VIF), you can use the vif() function from the car package in R. The VIF indicates how much the variance of a regression coefficient is inflated due to collinearity with other predictors. A higher VIF value suggests multicollinearity.
+
+```{r}
+vif(mylogit)
+```
+
+To check for multicollinearity among explanatory variables, we calculated the **Generalized Variance Inflation Factor (GVIF)** for each variable. We adjusted the GVIF values using the formula:
+
+$$
+GVIF^{1/(2 \cdot Df)}
+$$
+
+to account for variables with multiple degrees of freedom.
+
+All adjusted GVIF values were below 2, which suggests **no serious multicollinearity** among the predictors.
+
+The highest adjusted GVIF was for `log_OrderCount` (1.661450), which is still well within acceptable limits.
+
+## 5.4. General-to-specific method to variables selection
+
+#### Model 1:
+
+**Remove "CashbackAmount" variable**
+
+```{r}
+mylogit1 <- glm(Churn ~ log_Tenure + PreferredLoginDevice + CityTier + log_WarehouseToHome + PreferredPaymentMode + Gender + HourSpendOnApp + NumberOfDeviceRegistered + PreferedOrderCat + SatisfactionScore + MaritalStatus + log_NumberOfAddress + Complain + log_OrderAmountHikeFromlastYear + log_CouponUsed + log_OrderCount + log_DaySinceLastOrder, data = data,
+  family = binomial(link = "logit"))
+
+summary(mylogit1)
+```
+
+```{r}
+lrtest(mylogit1, mylogit)
+```
+
+The p-value is extremely high ( 0.8658), indicating that the variable `CashbackAmount` does **not** provide any statistically significant improvement in model fit.
+
+**Conclusion**: There is no evidence to justify keeping `CashbackAmount` in the model. Removing it does not reduce model performance, and its exclusion helps simplify the model without loss of explanatory power.
+
+#### Model 2:
+
+**Remove "CashbackAmount", "OrderAmountHikeFromlastYear" variables**
+
+```{r}
+mylogit2 <- glm(Churn ~ log_Tenure + PreferredLoginDevice + CityTier + log_WarehouseToHome + PreferredPaymentMode + Gender + HourSpendOnApp + NumberOfDeviceRegistered + PreferedOrderCat + SatisfactionScore + MaritalStatus + log_NumberOfAddress + Complain + log_CouponUsed + log_OrderCount + log_DaySinceLastOrder, data = data,
+  family = binomial(link = "logit"))
+
+summary(mylogit2)
+
+lrtest(mylogit2, mylogit1)
+
+# Wald test for joint significance
+linearHypothesis(mylogit, c("log_CashbackAmount = 0", "log_OrderAmountHikeFromlastYear = 0"))
+
+```
+
+**Likelihood ratio test**: Since the p-value is far greater than 0.05 (0.8038), we fail to reject the null hypothesis.This means that OrderAmountHikeFromlastYear does not significantly improve the model when added. Therefore, it can be removed from the model without reducing its explanatory power
+
+**Wald Test**: Joint Significance of CashbackAmount and OrderAmountHikeFromlastYear: The Wald test evaluates whether two coefficients—CashbackAmount and OrderAmountHikeFromlastYear—are jointly equal to zero.
+
+Hypotheses:
+
+-   H0 (null): Both coefficients are 0 (i.e., they have no effect).
+-   H1 (alternative): At least one coefficient is non-zero.
+
+With a p-value of 0.9569, we fail to reject the null hypothesis, indicating that CashbackAmount and OrderAmountHikeFromlastYear are not jointly significant. Their contribution to explaining churn is negligible, and they can be safely excluded from the model to simplify it.
+
+#### Model 3:
+
+**Remove "CashbackAmount", "OrderAmountHikeFromlastYear", "PreferredPaymentMode" variables**
+
+```{r}
+mylogit3 <- glm(Churn ~ log_Tenure + PreferredLoginDevice + CityTier + log_WarehouseToHome + Gender + HourSpendOnApp + NumberOfDeviceRegistered + PreferedOrderCat + SatisfactionScore + MaritalStatus + log_NumberOfAddress + Complain + log_CouponUsed + log_OrderCount + log_DaySinceLastOrder, data = data,
+  family = binomial(link = "logit"))
+
+summary(mylogit3)
+
+
+# Wald test for joint significance
+linearHypothesis(mylogit, c("log_CashbackAmount = 0", "log_OrderAmountHikeFromlastYear = 0","PreferredPaymentModeCC = 0","PreferredPaymentModeCOD =0", "PreferredPaymentModeCredit Card=0","PreferredPaymentModeDebit Card=0","PreferredPaymentModeE wallet =0","PreferredPaymentModeUPI =0"))
+
+```
+
+*Wald test*
+
+Since p \> 0.05, you fail to reject the null hypothesis, meaning: These three variables do not contribute significantly to the model jointly. It is safe to remove PreferredPaymentMod, HourSpendOnApp, OrderAmountHikeFromlastYear,and PreferredPaymentMode from our model.
+
+#### Model 4:
+
+**Remove "HourSpendOnApp", "OrderAmountHikeFromlastYear", "CashbackAmount", "PreferredPaymentMode" variables**
+
+```{r}
+mylogit4 <- glm(Churn ~ log_Tenure + PreferredLoginDevice + CityTier + log_WarehouseToHome + Gender + NumberOfDeviceRegistered + PreferedOrderCat + SatisfactionScore + MaritalStatus + log_NumberOfAddress + Complain + log_CouponUsed + log_OrderCount + log_DaySinceLastOrder, data = data,
+  family = binomial(link = "logit"))
+summary(mylogit4)
+
+lrtest(mylogit4, mylogit3)
+
+# Wald test for joint significance
+linearHypothesis(mylogit, c("log_CashbackAmount = 0", "log_OrderAmountHikeFromlastYear = 0","PreferredPaymentModeCC = 0","PreferredPaymentModeCOD =0", "PreferredPaymentModeCredit Card=0","PreferredPaymentModeDebit Card=0","PreferredPaymentModeE wallet =0","PreferredPaymentModeUPI =0","HourSpendOnApp=0"))
+```
+
+*Likelihood ratio test*
+
+Since p \> 0.05, we fail to reject the null hypothesis that the coefficient for HourSpendOnApp is zero.This suggests that HourSpendOnApp is not statistically significant in predicting churn
+
+*Wald test*
+
+Since p \> 0.05, we fail to reject the null hypothesis, meaning: These four variables do not contribute significantly to the model jointly. It is safe to remove PreferredPaymentMod, HourSpendOnApp, OrderAmountHikeFromlastYear,and CashbackAmount from our model.
+
+#### Model 6:
+
+**Remove "HourSpendOnApp", "OrderAmountHikeFromlastYear", "CashbackAmount", "PreferredPaymentMode" and "CouponUsed" variables**
+
+```{r}
+mylogit5 <- glm(Churn ~ log_Tenure + PreferredLoginDevice + CityTier + log_WarehouseToHome + Gender + NumberOfDeviceRegistered + PreferedOrderCat + SatisfactionScore + MaritalStatus + log_NumberOfAddress + Complain  + log_OrderCount + log_DaySinceLastOrder, data = data,
+  family = binomial(link = "logit"))
+summary(mylogit5)
+
+lrtest(mylogit5, mylogit4)
+
+# Wald test for joint significance
+linearHypothesis(mylogit, c("log_CashbackAmount = 0", "log_OrderAmountHikeFromlastYear = 0","PreferredPaymentModeCC = 0","PreferredPaymentModeCOD =0", "PreferredPaymentModeCredit Card=0","PreferredPaymentModeDebit Card=0","PreferredPaymentModeE wallet =0","PreferredPaymentModeUPI =0","HourSpendOnApp=0", "log_CouponUsed = 0"))
+```
+
+*Likelihood ratio test*
+
+Since p \> 0.05, we fail to reject the null hypothesis that the coefficient for CouponUsed is zero.This suggests that CouponUsed is not statistically significant in predicting churn
+
+*Wald test*
+
+Since p \> 0.05, we fail to reject the null hypothesis, meaning: These five variables do not contribute significantly to the model jointly. It is safe to remove HourSpendOnApp, OrderAmountHikeFromlastYear,CashbackAmount,PreferredPaymentMode and CouponUsed from our model.
+
+#### Model 6:
+
+**Remove "HourSpendOnApp", "OrderAmountHikeFromlastYear", "CashbackAmount", "PreferredPaymentMode", "CouponUsed" and "PreferedOrderCatGrocery" variables**
+
+```{r}
+
+# Remove "Grocery" and relevel
+data$PreferedOrderCat <- factor(data$PreferedOrderCat, levels = setdiff(levels(data$PreferedOrderCat), "Grocery"))                               
+
+# Fit updated model
+mylogit6 <- glm(Churn ~ log_Tenure + PreferredLoginDevice + CityTier + log_WarehouseToHome + Gender + NumberOfDeviceRegistered + PreferedOrderCat + SatisfactionScore + MaritalStatus + log_NumberOfAddress + Complain  + log_OrderCount + log_DaySinceLastOrder, data = data,
+  family = binomial(link = "logit"))
+
+summary(mylogit6)
+
+# Wald test for joint significance
+linearHypothesis(mylogit, c("log_CashbackAmount = 0", "log_OrderAmountHikeFromlastYear = 0","PreferredPaymentModeCC = 0","PreferredPaymentModeCOD =0", "PreferredPaymentModeCredit Card=0","PreferredPaymentModeDebit Card=0","PreferredPaymentModeE wallet =0","PreferredPaymentModeUPI =0","HourSpendOnApp=0", "log_CouponUsed = 0", "PreferedOrderCatGrocery=0"))
+
+
+
+
+
+```
+
+*Wald test*
+
+Since p \> 0.05, we fail to reject the null hypothesis, meaning: These six variables do not contribute significantly to the model jointly. It is safe to remove HourSpendOnApp, OrderAmountHikeFromlastYear,CashbackAmount,PreferredPaymentMode, CouponUsed and PreferedOrderCatGrocery from our model.
+
+#### Model 7:
+
+**Remove "HourSpendOnApp", "OrderAmountHikeFromlastYear", "CashbackAmount", "PreferredPaymentMode", "CouponUsed", "PreferedOrderCatGrocery" and "MaritalStatusMarried" variables**
+
+```{r}
+# Remove "Married" category from MaritalStatus and fit the model again
+data$MaritalStatus <- factor(data$MaritalStatus, levels = setdiff(levels(data$MaritalStatus), "Married"))                               
+                                
+mylogit7 <- glm(Churn ~ log_Tenure + PreferredLoginDevice + CityTier + log_WarehouseToHome + Gender + NumberOfDeviceRegistered + PreferedOrderCat + SatisfactionScore + MaritalStatus + log_NumberOfAddress + Complain  + log_OrderCount + log_DaySinceLastOrder, data = data,
+  family = binomial(link = "logit"))
+
+
+summary(mylogit7)
+
+# Wald test for joint significance
+linearHypothesis(mylogit, c("log_CashbackAmount = 0", "log_OrderAmountHikeFromlastYear = 0","PreferredPaymentModeCC = 0","PreferredPaymentModeCOD =0", "PreferredPaymentModeCredit Card=0","PreferredPaymentModeDebit Card=0","PreferredPaymentModeE wallet =0","PreferredPaymentModeUPI =0","HourSpendOnApp=0", "log_CouponUsed = 0", "PreferedOrderCatGrocery=0","MaritalStatusMarried=0")) 
+```
+
+*Wald test*
+
+Since p \> 0.05, we fail to reject the null hypothesis, meaning: These seven variables do not contribute significantly to the model jointly. It is safe to remove HourSpendOnApp, OrderAmountHikeFromlastYear,CashbackAmount,PreferredPaymentMode, CouponUsed, PreferedOrderCatGrocery and MaritalStatusMarried from our model.
+
+#### Model 8:
+
+**Remove "HourSpendOnApp", "OrderAmountHikeFromlastYear", "CashbackAmount", "PreferredPaymentMode", "CouponUsed", "PreferedOrderCatGrocery", "MaritalStatusMarried" and "PreferredLoginDevicePhone" variables**
+
+```{r}
+# Remove "Phone" category from PreferredLoginDevice and fit the model again
+data$PreferredLoginDevice <- factor(data$PreferredLoginDevice, levels = setdiff(levels(data$PreferredLoginDevice), "Phone"))                               
+                                
+mylogit8 <- glm(Churn ~ log_Tenure + PreferredLoginDevice + CityTier + log_WarehouseToHome + Gender + NumberOfDeviceRegistered + PreferedOrderCat + SatisfactionScore + MaritalStatus + log_NumberOfAddress + Complain  + log_OrderCount + log_DaySinceLastOrder, data = data,
+  family = binomial(link = "logit"))
+
+
+summary(mylogit8)
+
+# Wald test for joint significance
+linearHypothesis(mylogit, c("log_CashbackAmount = 0", "log_OrderAmountHikeFromlastYear = 0","PreferredPaymentModeCC = 0","PreferredPaymentModeCOD =0", "PreferredPaymentModeCredit Card=0","PreferredPaymentModeDebit Card=0","PreferredPaymentModeE wallet =0","PreferredPaymentModeUPI =0","HourSpendOnApp=0", "log_CouponUsed = 0", "PreferedOrderCatGrocery=0","MaritalStatusMarried=0","PreferredLoginDevicePhone=0")) 
+```
+
+*Wald test*
+
+Since p \< 0.05 (0.0374), we need to reject the null hypothesis, meaning: These eight variables do contribute significantly to the model jointly. It is not safe to remove PreferredLoginDevicePhone from our model.
+
+#### Model 9:
+
+**Remove "HourSpendOnApp", "OrderAmountHikeFromlastYear", "CashbackAmount", "PreferredPaymentMode", "CouponUsed", "PreferedOrderCatGrocery", "MaritalStatusMarried" and "Gender" variables**
+
+```{r}
+mylogit9 <- glm(Churn ~ log_Tenure + PreferredLoginDevice + CityTier + log_WarehouseToHome + NumberOfDeviceRegistered + PreferedOrderCat + SatisfactionScore + MaritalStatus + log_NumberOfAddress + Complain  + log_OrderCount + log_DaySinceLastOrder, data = data,
+  family = binomial(link = "logit"))
+
+
+summary(mylogit9)
+
+# Wald test for joint significance
+linearHypothesis(mylogit, c("log_CashbackAmount = 0", "log_OrderAmountHikeFromlastYear = 0","PreferredPaymentModeCC = 0","PreferredPaymentModeCOD =0", "PreferredPaymentModeCredit Card=0","PreferredPaymentModeDebit Card=0","PreferredPaymentModeE wallet =0","PreferredPaymentModeUPI =0","HourSpendOnApp=0", "log_CouponUsed = 0", "PreferedOrderCatGrocery=0","MaritalStatusMarried=0", "GenderMale=0")) 
+```
+
+*Wald test*
+
+Since p \< 0.05 (0.04079), we need to reject the null hypothesis, meaning: These eight variables do contribute significantly to the model jointly. It is not safe to remove Gender from our model.
+
+#### Model 10:
+
+**Add interactions between variables**
+
+```{r}
+mylogit10 <- glm(Churn ~ log_Tenure + PreferredLoginDevice + CityTier + log_WarehouseToHome + NumberOfDeviceRegistered + PreferedOrderCat + SatisfactionScore + MaritalStatus + log_NumberOfAddress + Complain  + log_OrderCount + log_DaySinceLastOrder + CouponUsed * log_OrderCount + Complain * log_OrderCount +log_Tenure * CityTier, data = data,
+  family = binomial(link = "logit"))
+summary(mylogit10)
+```
+
+All interactions have p-value \> 0.05, they do not contribute statistically and may overcomplicate the model. We should drop interactions.
+
+#### Final model
+
+```{r}
+summary(mylogit7)
+```
+
+## 5.5. Quality Table
+
+```{r}
+
+model_list <- list(
+  "Logit (full model)" = mylogit,
+  "Probit (full model)" = myprobit,
+  "Intermediate model" = mylogit3,
+  "Final Model" = mylogit7
+)
+
+modelsummary(model_list,
+             statistic = "std.error",
+             gof_omit = ".*IC|Log.Lik|Deviance",
+             stars = TRUE)
+
+```
+
+## 5.6. Marginal effects
+
+```{r}
+marginal_effects <- margins(mylogit7)
+summary(marginal_effects)
+```
+
+Marginal effects in a logistic regression model represent the change in the predicted probability of the outcome (customer churn) for a one-unit change in a predictor variable, holding all other predictors constant. Below is the interpretation of marginal effects for statistically significant variables in the our final model:
+
+Complain: Customers who have lodged a complaint are associated with a 16.63 percentage point increase in the predicted probability of churn, holding all other factors constant.
+
+log_Tenure: A one-unit increase in the logarithm of tenure is associated with a 15.65 percentage point decrease in the probability of churn, all else being equal.
+
+log_DaySinceLastOrder: An increase in the time since the last order (log scale) decreases the likelihood of churn by 8.07 percentage points, ceteris paribus.
+
+log_NumberOfAddress: Customers with more recorded addresses (log scale) are 9.41 percentage points more likely to churn.
+
+log_OrderCount: Each unit increase in the log of order count increases the predicted probability of churn by 8.76 percentage points, holding other variables constant.
+
+log_WarehouseToHome: Greater delivery distance (log-transformed) increases the likelihood of churn by 7.13 percentage points.
+
+MaritalStatusSingle: Being single is associated with a 7.24 percentage point increase in the probability of churn, all else equal.
+
+NumberOfDeviceRegistered: Each additional registered device is associated with a 3.52 percentage point increase in churn probability.
+
+CityTier: Customers living in higher-tier cities have a 2.93 percentage point higher probability of churning.
+
+PreferredLoginDeviceMobile Phone: Using a mobile phone to log in reduces the predicted probability of churn by 5.52 percentage points.
+
+PreferedOrderCatLaptop & Accessory: Preference for laptops and accessories is associated with a 16.02 percentage point decrease in the probability of churn.
+
+PreferedOrderCatMobile: Preference for mobile products reduces churn probability by 13.58 percentage points, all else constant.
+
+PreferedOrderCatMobile Phone: Preference for mobile phones is linked to a 9.66 percentage point decrease in predicted churn.
+
+PreferedOrderCatOthers: Customers preferring "Other" categories are 27.28 percentage points more likely to churn — the largest positive marginal effect observed.
+
+SatisfactionScore: A one-point increase in satisfaction score is surprisingly associated with a 3.23 percentage point increase in churn probability, which may indicate a complex relationship requiring further investigation.
+
+## 5.7. Odds Ratios
+
+In logistic regression, the **odds ratio (OR)** for a predictor indicates how the **odds of the outcome** (here, customer churn) change with a one-unit increase in that predictor, holding all other variables constant. Odds ratios are calculated by exponentiating the model coefficients:
+
+```{r}
+# Calculate odds ratios and 95% CI
+odds_ratios <- exp(coef(mylogit7))
+conf_int <- exp(confint(mylogit7))
+odds_table <- data.frame(
+  Variable = names(odds_ratios),
+  OR = odds_ratios,
+  CI_lower = conf_int[, 1],
+  CI_upper = conf_int[, 2]
+)
+print(odds_table)
+```
+
+*Interpretation of selected odds ratios:*
+
+-   **Complain**: Customers who filed a complaint are **6.42 times more likely** to churn compared to those who didn’t.
+-   **log_Tenure**: A one-unit increase in tenure (log-transformed) is associated with an **82.6% reduction** in the odds of churn.
+-   **log_OrderCount**: More frequent ordering (log-transformed) increases the odds of churn by **166%**.
+-   **log_NumberOfAddress**: Customers with more delivery addresses are **2.86 times more likely** to churn.
+-   **MaritalStatusSingle**: Single customers are **2.29 times more likely** to churn than married ones.
+-   **SatisfactionScore**: Each additional point in satisfaction increases churn odds by **43.5%**, suggesting potential non-linearity or dissatisfaction despite higher scores.
+-   **PreferedOrderCatLaptop & Accessory**: Preference for this category **reduces churn odds by 81.3%**.
+-   **log_DaySinceLastOrder**: Longer time since the last order **reduces churn odds by about 59.4%**, indicating re-engagement behavior.
+
+## 5.8. Diagnostics
+
+The link test is a diagnostic tool used to assess the specification of a logistic regression model. It helps determine whether the model is correctly specified or if key predictors may have been omitted or if non-linearities remain unaddressed.
+
+The logic behind the link test is that if a model is properly specified, adding the predicted value (`_hat`) should be statistically significant (as it captures the systematic part of the variation), while the square of the predicted value (`_hatsq`) should not be significant (as it would otherwise suggest a mis-specification).
+
+```{r}
+# Update final data
+data_clean <- subset(data,
+               PreferedOrderCat != "Grocery" &
+               MaritalStatus != "Married" )
+
+data$PreferedOrderCat <- droplevels(data$PreferedOrderCat)
+data$MaritalStatus <- droplevels(data$MaritalStatus)
+
+dim(data)
+
+#Link test
+data_clean$hat <- fitted(mylogit7)
+data_clean$hat_sq <- data_clean$hat^2
+
+link_test_model <- glm(Churn ~ hat + hat_sq, family = binomial, data = data_clean)
+summary(link_test_model)
+```
+
+The coefficient for hat is statistically significant (p \< 0.001), while the coefficient for hat_sq is not statistically significant (p = 0.297). This result indicates that the model is correctly specified and there is no evidence of omitted variables or incorrect functional form. Thus, the model passes the link test.
+
+```{r}
+# R-squared statistics
+PseudoR2(myprobit)
+```
+
+The logistic regression model's performance was evaluated using a variety of pseudo R sq and related fit measures:
+
+-   **McKelvey & Zavoina R_sq (0.623)** is regarded as the best approximation of the traditional R² in binary outcome models, showing that 62.3% of the variance in the underlying latent variable is explained.
+
+-   **Count R_sq (0.907)** indicates that 90.7% of observations were correctly classified. While impressive, this metric can be inflated in imbalanced datasets.
+
+-   **Adjusted Count R_sq (0.442)** corrects for potential baseline bias in classification accuracy, and still reflects solid predictive power.
+
+Overall, these fit statistics confirm that the final model provides a strong and robust explanation for customer churn behavior.
+
+```{r}
+# Hosmer-Lemeshow Test
+hl_test <- hoslem.test(x = mylogit7$y, y = fitted(mylogit7), g = 10)
+print(hl_test)
+```
+
+```{r}
+pred_class <- ifelse(fitted(mylogit7) > 0.5, 1, 0)
+confusionMatrix(as.factor(pred_class), as.factor(mylogit7$y))
+```
+
+```{r}
+#ROC Curve and AUC
+roc_curve <- roc(mylogit7$y, fitted(mylogit7))
+plot(roc_curve, main = "ROC Curve")
+auc(roc_curve)
+```
+
+The logistic regression model demonstrates strong classification performance, as shown by:
+
+-   High accuracy (88.9%)
+-   High sensitivity (94.85%)
+-   A well-performing ROC curve (AUC 0.9)
+-   Substantial Kappa statistic (0.67)
+
+Despite a significant Hosmer–Lemeshow test indicating some model misspecification, the model performs well in practical terms, especially in minimizing false negatives for non-churners.However, the relatively lower specificity (68.93%) means that some churners are still being misclassified. Future improvements could include exploring interaction terms, non-linear effects, or machine learning methods to capture more complex relationships in the data.
+
+# 6. Hypotheses
+
+Based on the insights from prior research and exploratory analysis, we formulate the following primary and secondary hypotheses to test the determinants of customer churn in e-commerce.
+
+### Hypothesis 1: Complaints and Churn
+
+**H0:** Filing a complaint does not affect the likelihood of customer churn.\
+**H1:** Customers who lodge complaints are more likely to churn.
+
+The marginal effects indicate that complaints are associated with a **16.63 percentage point increase** in the probability of churn, holding all other variables constant. The p-value associated with the complaint variable is statistically significant at the 1% level. Thus, we **reject the null hypothesis**, suggesting that customer complaints are a strong predictor of churn.
+
+### Hypothesis 2: Customer Tenure and Churn
+
+**H0:** Customer tenure has no impact on the likelihood of churn.\
+**H1:** Longer tenure is associated with a lower probability of churn.
+
+The variable *log_Tenure* is statistically significant and is associated with a **15.65 percentage point decrease** in churn probability. Therefore, we **reject the null hypothesis** and conclude that longer-tenured customers are less likely to churn.
+
+### Hypothesis 3: Order Activity and Churn
+
+**H0:** Order frequency does not influence customer churn.\
+**H1:** Higher order frequency reduces the probability of churn.
+
+*log_OrderCount* shows a significant **8.76 percentage point increase** in churn probability for higher order frequency. Interestingly, rather than decreasing churn, more frequent orders are positively associated with churn in our dataset. We **reject the null hypothesis**, but the direction of the relationship suggests complex customer dynamics possibly related to dissatisfaction despite higher purchase activity.
+
+### Hypothesis 4: Distance to Delivery and Churn
+
+**H0:** Delivery distance has no effect on churn likelihood.\
+**H1:** Longer delivery distances increase the probability of churn.
+
+The *log_WarehouseToHome* variable is positively associated with churn (7.13 percentage point increase), and is statistically significant. Hence, we **reject the null hypothesis** and conclude that delivery logistics impact customer retention.
+
+### Hypothesis 5: Product Category Preference and Churn
+
+**H0:** Product category preference does not influence churn.\
+**H1:** Certain product category preferences are associated with lower churn probability.
+
+Customers who preferred *Laptop & Accessory*, *Mobile*, or *Mobile Phone* categories showed **lower predicted churn probabilities** (16.02, 13.58, and 9.66 percentage point decreases respectively). In contrast, those preferring "Others" showed the **highest increase** (27.28 percentage points). These findings are statistically significant, leading us to **reject the null hypothesis**.
+
+### Hypothesis 6: Marital Status and Churn
+
+**H0:** Marital status does not affect churn.\
+**H1:** Single customers are more likely to churn.
+
+Single customers are associated with a **7.24 percentage point increase** in churn probability, and the result is statistically significant. Therefore, we **reject the null hypothesis** and confirm marital status as a relevant demographic factor.
+
+# 7. Findings and conclusion
+
+This study set out to identify the key drivers of customer churn in the e-commerce sector using a binary logistic regression model. By analyzing a comprehensive set of variables, including behavioral indicators, demographic information, and customer preferences, the research revealed several statistically significant predictors of churn. Customers who submitted complaints were substantially more likely to churn, while those with longer tenure and more recent purchase activity were less likely to do so. Other important predictors included the number of devices registered, marital status, delivery distance, and product category preferences. Some product categories, such as laptops or mobile phones, were associated with reduced churn, whereas others, particularly "Other" categories, had a strong positive relationship with churn risk.
+
+The marginal effects analysis provided further insights into the magnitude of these relationships. For instance, a complaint was associated with a 16.63 percentage point increase in churn probability, while each unit increase in log tenure decreased the probability of churn by 15.65 percentage points. Interestingly, the satisfaction score, which would typically be expected to lower churn, showed a small but significant positive association with churn. This finding may reflect unobserved factors such as inflated satisfaction ratings or unmet expectations despite high scores, indicating the need for deeper qualitative assessment in future research.
+
+From a model performance perspective, the logistic regression demonstrated robust predictive ability. The overall classification accuracy was 88.89%, with high sensitivity (94.85%) and a well-balanced specificity (68.93%). The ROC curve showed a strong area under the curve (AUC), indicating high discriminative power. Pseudo-R sq statistics, including McFadden’s R sq (0.44) and McKelvey-Zavoina R sq (0.62), confirmed that the model captured a substantial portion of variance in customer churn behavior. Although the Hosmer-Lemeshow goodness-of-fit test yielded a significant p-value, this is a common occurrence in large samples and does not necessarily undermine the model’s overall validity.
+
+In conclusion, this research confirms that customer churn is a multifactorial outcome influenced by a range of behavioral, demographic, and experiential factors. The findings align well with existing literature and highlight the practical importance of monitoring complaints, purchase recency, and order behavior in predicting churn. These insights can support the development of targeted retention strategies and customer relationship management practices. Future work could enhance prediction accuracy through non-linear models, machine learning algorithms, or deeper exploration of the satisfaction-churn paradox.
+
+# 8. Bibliography
+
+1.  Ahmad, A., Jafar, A., & Aljoumaa, K. (2019). Customer churn prediction in telecom using machine learning in big data platform. Journal of Big Data, 6(1), 1–24.
+
+2.  Berger, P., & Kompan, M. (2019). Predicting customer churn in e-commerce using behavior-based models. International Journal of Information Management, 47, 150–162.
+
+3.  Bhattacharya, S. (2021). Predicting e-commerce customer churn using transactional data. Electronic Commerce Research and Applications, 45, 101024.
+
+4.  Dahiya, M., & Bhatia, M. P. S. (2020). Predictive analytics for customer churn using machine learning techniques. Procedia Computer Science, 167, 2319–2328.
+
+5.  Jaiswal, A. K., & Niraj, R. (2011). Examining mediating role of attitudinal loyalty and satisfaction on customer behavior. Journal of Services Marketing, 25(3), 165–175.
+
+6.  Li, M. (2022). Customer churn prediction on e-commerce platform using Random Forest. International Journal of Business Analytics, 9(4), 45–57.
+
+7.  Liu, Q., & Wang, Y. (2010). Predicting customer churn in the telecommunications industry–An application of survival analysis modeling using SAS. SAS Global Forum.
