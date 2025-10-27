@@ -1,5 +1,7 @@
 ******Determinants of Customer Churn in E-commerce: An Econometric Analysis******
 
+Full report: https://rpubs.com/Trang_Hoang/1360998
+
 **Overview**
 
 This study investigates the determinants of customer churn in e-commerce using a binary logistic regression model on a real-world dataset from Kaggle. The goal is to identify which behavioral, demographic, and experiential factors most strongly predict whether a customer will stop using an online platform.
